@@ -1,0 +1,55 @@
+
+// Developer: Forex Robot Easy Team
+// Website: forexroboteasy.com
+
+// Bar Strength Divergence indicator for MT5
+
+#property indicator_chart_window
+#property indicator_buffers 1
+
+// Input parameters
+input double resistanceLevel = 1.0;
+input double supportLevel = 0.5;
+
+// Indicator buffers
+double barStrengthBuffer[];
+
+// Initialization function
+int OnInit()
+{
+    // Set indicator buffers
+    SetIndexBuffer(0, barStrengthBuffer, INDICATOR_DATA);
+
+    // Set indicator labels
+    PlotIndexSetString(0, PLOT_LABEL, 'Bar Strength');
+
+    return(INIT_SUCCEEDED);
+}
+
+// Calculation function
+int OnCalculate(const int rates_total,
+                const int prev_calculated,
+                const datetime &time[],
+                const double &open[],
+                const double &high[],
+                const double &low[],
+                const double &close[],
+                const long &tick_volume[],
+                const long &volume[],
+                const int &spread[])
+{
+    // Calculate bar strength for each candle
+    for(int i = prev_calculated; i < rates_total; i++)
+    {
+        double barStrength = 0.0;
+
+        if(high[i] > resistanceLevel)
+            barStrength += 1.0;
+        else if(low[i] < supportLevel)
+            barStrength -= 1.0;
+
+        barStrengthBuffer[i] = barStrength;
+    }
+
+    return(rates_total);
+}
